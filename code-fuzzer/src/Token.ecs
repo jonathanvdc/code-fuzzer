@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using LeMP;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A data structure that represents a token.
+    /// </summary>
+    public sealed class Token
+    {
+        public this(set string Terminal, set string Contents)
+        { }
+
+        /// <summary>
+        /// Gets the terminal this token belongs to.
+        /// </summary>
+        public string Terminal { get; private set; }
+
+        /// <summary>
+        /// Gets this token's contents, as a string.
+        /// </summary>
+        public string Contents { get; private set; }
+
+        public override string ToString()
+        {
+            return Terminal + ": " + Contents;
+        }
+    }
+}

@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using LeMP;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A base class for terminals and production.
+    /// </summary>
+    public abstract class SyntaxNode
+    {
+        public this() { }
+
+        /// <summary>
+        /// Converts this syntax node to a string, and appends it to the given
+        /// string builder.
+        /// </summary>
+        public abstract void AppendTo(StringBuilder Builder);
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
+        }
+    }
+
+    /// <summary>
+    /// A syntax node that represents an instance of a terminal. It corresponds
+    /// to a single token.
+    /// </summary>
+    public sealed class TokenNode : SyntaxNode
+    {
+        public this(set Token Value)
+        { }
+
+        /// <summary>
+        /// Gets this terminal node's token.
+        /// </summary>
+        public Token Value { get; private set; }
+
+        public override void AppendTo(StringBuilder Builder)
+        {
+            Builder.Append(Value.Contents);
+        }
+    }
+
+    /// <summary>
+    /// A syntax node that represents a production, i.e., an instance of a
+    /// production rule.
+    /// </summary>
+    public sealed class ProductionNode : SyntaxNode
+    {
+        public this(
+            set string Nonterminal, set IReadOnlyList<SyntaxNode> Children)
+        { }
+
+        /// <summary>
+        /// Gets the nonterminal for this production node.
+        /// </summary>
+        public string Nonterminal { get; private set; }
+
+        /// <summary>
+        /// Gets this production node's children.
+        /// </summary>
+        public IReadOnlyList<SyntaxNode> Children { get; private set; }
+
+        public override void AppendTo(StringBuilder Builder)
+        {
+            foreach (var item in Children)
+                item.AppendTo(Builder);
+        }
+    }
+}
