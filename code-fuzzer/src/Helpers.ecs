@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using LeMP;
+
+namespace CodeFuzzer
+{
+    public static class Helpers
+    {
+        /// <summary>
+        /// Tests if the contents of two lists are equal.
+        /// </summary>
+        public bool ListEqual<T>(IReadOnlyList<T> Left, IReadOnlyList<T> Right)
+        {
+            return Enumerable.SequenceEqual<T>(Left, Right);
+
+            /*
+            // Alternative implementation
+            int lCount = Left.Count;
+            if (lCount != Right.Count)
+                return false;
+
+            for (int i = 0; i < lCount; i++)
+            {
+                if (!Left[i].Equals(Right[i]))
+                    return false;
+            }
+            return true;
+            */
+        }
+    }
+}

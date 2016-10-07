@@ -8,6 +8,8 @@
         <RuntimeLibrary Include="System" />
         <RuntimeLibrary Include="System.Core" />
     </ItemGroup>
+    <Compile Include="Helpers.ecs" />
+    <Compile Include="ProductionRule.ecs" />
     <Compile Include="SyntaxNode.ecs" />
     <Compile Include="Token.ecs" />
 </Project>

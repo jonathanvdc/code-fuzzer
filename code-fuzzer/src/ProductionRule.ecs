@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A data structure that describes a production rule.
+    /// </summary>
+    public sealed class ProductionRule : IEquatable<ProductionRule>
+    {
+        public this(string Nonterminal, IReadOnlyList<string> Body)
+        {
+            this.Nonterminal = Nonterminal;
+            this.Body = Body;
+        }
+
+        /// <summary>
+        /// Gets this production rule's nonterminal.
+        /// </summary>
+        public string Nonterminal { get; private set; }
+
+        /// <summary>
+        /// Gets the sequence of symbols, i.e., nonterminal and terminal names,
+        /// that defines the production rule's body.
+        /// </summary>
+        public IReadOnlyList<string> Body { get; private set; }
+
+        public bool Equals(ProductionRule Other)
+        {
+            return Nonterminal == Other.Nonterminal
+                && Enumerable.SequenceEqual<string>(Body, Other.Body);
+        }
+
+        public override bool Equals(object Other)
+        {
+            return Other is ProductionRule && Equals((ProductionRule)Other);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = Nonterminal.GetHashCode();
+            foreach (var item in Body)
+                result = (result << 2) ^ item.GetHashCode();
+
+            return result;
+        }
+    }
+}
