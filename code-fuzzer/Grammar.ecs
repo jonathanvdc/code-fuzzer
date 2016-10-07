@@ -30,6 +30,16 @@ namespace CodeFuzzer
         public IEnumerable<string> Terminals { get { return tokenDefs.Keys; } }
 
         /// <summary>
+        /// Gets or sets the start symbol for the grammar.
+        /// </summary>
+        public string StartSymbol { get; set; }
+
+        /// <summary>
+        /// Tests if the grammar has a non-null start symbol.
+        /// </summary>
+        public bool HasStartSymbol { get { return StartSymbol != null; } }
+
+        /// <summary>
         /// Tests if the grammar defines the given terminal.
         /// </summary>
         public bool DefinesTerminal(string Terminal)
