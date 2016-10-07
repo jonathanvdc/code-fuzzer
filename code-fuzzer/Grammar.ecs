@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A grammar: a collection of token definitions, production rules, and
+    /// a start symbol.
+    /// </summary>
+    public sealed class Grammar
+    {
+        public Grammar()
+        {
+            this.rules = new Dictionary<string, HashSet<ProductionRule>>();
+            this.tokenDefs = new Dictionary<string, ITokenDef>();
+        }
+
+        private Dictionary<string, HashSet<ProductionRule>> rules;
+        private Dictionary<string, ITokenDef> tokenDefs;
+
+        /// <summary>
+        /// Gets the set of all nonterminals in the grammar.
+        /// </summary>
+        public IEnumerable<string> Nonterminals { get { return rules.Keys; } }
+
+        /// <summary>
+        /// Gets the set of all terminals in the grammar.
+        /// </summary>
+        public IEnumerable<string> Terminals { get { return tokenDefs.Keys; } }
+
+        /// <summary>
+        /// Tests if the grammar defines the given terminal.
+        /// </summary>
+        public bool DefinesTerminal(string Terminal)
+        {
+            return tokenDefs.ContainsKey(Terminal);
+        }
+
+        /// <summary>
+        /// Tests if the grammar defines the given nonterminal.
+        /// </summary>
+        public bool DefinesNonterminal(string Nonterminal)
+        {
+            return rules.ContainsKey(Nonterminal);
+        }
+
+        /// <summary>
+        /// Tests if the grammar defines the given symbol.
+        /// </summary>
+        public bool DefinesSymbol(string Symbol)
+        {
+            return DefinesTerminal(Symbol) || DefinesNonterminal(Symbol);
+        }
+
+        /// <summary>
+        /// Gets the set of all symbols in the grammar, i.e., the union of the
+        /// sets of terminals and nonterminals.
+        /// </summary>
+        public IEnumerable<string> Symbols
+        {
+            get { return Enumerable.Union<string>(Terminals, Nonterminals); }
+        }
+
+        /// <summary>
+        /// Gets the set of all production rules for the given nonterminal.
+        /// </summary>
+        public IEnumerable<ProductionRule> GetProductionRules(string Nonterminal)
+        {
+            return rules[Nonterminal];
+        }
+
+        /// <summary>
+        /// Gets the set of all production rules in the grammar.
+        /// </summary>
+        public IEnumerable<ProductionRule> GetProductionRules()
+        {
+            var results = new List<ProductionRule>();
+            foreach (var item in rules)
+                results.AddRange(item.Value);
+            return results;
+        }
+
+        /// <summary>
+        /// Adds the given production rule to the grammar. If the rule was
+        /// already present, then 'false' is returned. Otherwise, 'true' is
+        /// returned.
+        /// </summary>
+        public bool AddProductionRule(ProductionRule Rule)
+        {
+            if (!rules.ContainsKey(Rule.Symbol))
+                rules.Add(Rule.Symbol, new HashSet<ProductionRule>());
+
+            return rules[Rule.Symbol].Add(Rule);
+        }
+
+        /// <summary>
+        /// Gets the token definition for the given terminal.
+        /// </summary>
+        public ITokenDef GetTokenDef(string Terminal)
+        {
+            return tokenDefs[Terminal];
+        }
+
+        /// <summary>
+        /// (Re-)defines the given terminal as the given token definition.
+        /// </summary>
+        public void DefineToken(string Terminal, ITokenDef Def)
+        {
+            tokenDefs[Terminal] = Def;
+        }
+    }
+}
