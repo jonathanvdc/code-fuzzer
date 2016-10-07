@@ -9,16 +9,16 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class ProductionRule : IEquatable<ProductionRule>
     {
-        public this(string Nonterminal, IReadOnlyList<string> Body)
+        public this(string Symbol, IReadOnlyList<string> Body)
         {
-            this.Nonterminal = Nonterminal;
+            this.Symbol = Symbol;
             this.Body = Body;
         }
 
         /// <summary>
         /// Gets this production rule's nonterminal.
         /// </summary>
-        public string Nonterminal { get; private set; }
+        public string Symbol { get; private set; }
 
         /// <summary>
         /// Gets the sequence of symbols, i.e., nonterminal and terminal names,
@@ -28,7 +28,7 @@ namespace CodeFuzzer
 
         public bool Equals(ProductionRule Other)
         {
-            return Nonterminal == Other.Nonterminal
+            return Symbol == Other.Symbol
                 && Enumerable.SequenceEqual<string>(Body, Other.Body);
         }
 
@@ -39,7 +39,7 @@ namespace CodeFuzzer
 
         public override int GetHashCode()
         {
-            int result = Nonterminal.GetHashCode();
+            int result = Symbol.GetHashCode();
             foreach (var item in Body)
                 result = (result << 2) ^ item.GetHashCode();
 
