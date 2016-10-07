@@ -4,4 +4,4 @@ install:
   - unzip ecsc.zip -d bin_ecsc
 script:
   # Compile code-fuzzer
-  - mono bin_ecsc/ecsc.exe src/code-fuzzer/code-fuzzer.ecsproj
+  - mono bin_ecsc/ecsc.exe code-fuzzer/code-fuzzer.ecsproj
