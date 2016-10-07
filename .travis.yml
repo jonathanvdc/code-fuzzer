@@ -1,6 +1,6 @@
 language: csharp
 install:
-  - curl -L https://github.com/jonathanvdc/ecsc/releases/download/v0.1.0/ecsc.zip > ecsc.zip
+  - curl -L https://github.com/jonathanvdc/ecsc/releases/download/v0.1.1/ecsc.zip > ecsc.zip
   - unzip ecsc.zip -d bin_ecsc
 script:
   # Compile code-fuzzer
