@@ -13,6 +13,11 @@ namespace CodeFuzzer
         public this() { }
 
         /// <summary>
+        /// Gets the symbol for this syntax node.
+        /// </summary>
+        public abstract string Symbol { get; }
+
+        /// <summary>
         /// Converts this syntax node to a string, and appends it to the given
         /// string builder.
         /// </summary>
@@ -40,6 +45,11 @@ namespace CodeFuzzer
         /// </summary>
         public Token Value { get; private set; }
 
+        /// <summary>
+        /// Gets the symbol for this syntax node.
+        /// </summary>
+        public override string Symbol { get { return Value.Symbol; } }
+
         public override void AppendTo(StringBuilder Builder)
         {
             Builder.Append(Value.Contents);
@@ -53,18 +63,35 @@ namespace CodeFuzzer
     public sealed class ProductionNode : SyntaxNode
     {
         public this(
-            set string Nonterminal, set IReadOnlyList<SyntaxNode> Children)
+            set string nonterminal, set IReadOnlyList<SyntaxNode> Children)
         { }
+
+        private string nonterminal;
 
         /// <summary>
         /// Gets the nonterminal for this production node.
         /// </summary>
-        public string Nonterminal { get; private set; }
+        public override string Symbol { get { return nonterminal; } }
 
         /// <summary>
         /// Gets this production node's children.
         /// </summary>
         public IReadOnlyList<SyntaxNode> Children { get; private set; }
+
+        /// <summary>
+        /// Gets the inferred production rule for this node, i.e., the
+        /// production rule that was used to build this node.
+        /// </summary>
+        public ProductionRule Rule
+        {
+            get
+            {
+                var symbols = new List<string>();
+                foreach (var item in Children)
+                    symbols.Add(item.Symbol);
+                return new ProductionRule(nonterminal, symbols);
+            }
+        }
 
         public override void AppendTo(StringBuilder Builder)
         {

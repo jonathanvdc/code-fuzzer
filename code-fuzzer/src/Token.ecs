@@ -10,13 +10,13 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class Token
     {
-        public this(set string Terminal, set string Contents)
+        public this(set string Symbol, set string Contents)
         { }
 
         /// <summary>
         /// Gets the terminal this token belongs to.
         /// </summary>
-        public string Terminal { get; private set; }
+        public string Symbol { get; private set; }
 
         /// <summary>
         /// Gets this token's contents, as a string.
@@ -25,7 +25,7 @@ namespace CodeFuzzer
 
         public override string ToString()
         {
-            return Terminal + ": " + Contents;
+            return Symbol + ": " + Contents;
         }
     }
 }
