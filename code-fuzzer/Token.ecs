@@ -10,7 +10,25 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class Token
     {
-        public this(set string Symbol, set string Contents)
+        public this(string Symbol, string Contents)
+            : this(Symbol, null, Contents, null)
+        { }
+
+        public this(
+            string Symbol, Token LeadingTrivia,
+            string Contents)
+            : this(Symbol, LeadingTrivia, Contents, null)
+        { }
+
+
+        public this(
+            string Symbol, string Contents, Token TrailingTrivia)
+            : this(Symbol, null, Contents, TrailingTrivia)
+        { }
+
+        public this(
+            set string Symbol, set Token LeadingTrivia,
+            set string Contents, set Token TrailingTrivia)
         { }
 
         /// <summary>
@@ -19,13 +37,68 @@ namespace CodeFuzzer
         public string Symbol { get; private set; }
 
         /// <summary>
+        /// Gets the leading trivia token, if any.
+        /// </summary>
+        public Token LeadingTrivia { get; private set; }
+
+        /// <summary>
+        /// Checks if this token has a leading trivia token.
+        /// </summary>
+        public bool HasLeadingTrivia { get { return LeadingTrivia != null; } }
+
+        /// <summary>
         /// Gets this token's contents, as a string.
         /// </summary>
         public string Contents { get; private set; }
 
+        /// <summary>
+        /// Gets the trailing trivia token, if any.
+        /// </summary>
+        public Token TrailingTrivia { get; private set; }
+
+        /// <summary>
+        /// Checks if this token has a trailing trivia token.
+        /// </summary>
+        public bool HasTrailingTrivia { get { return TrailingTrivia != null; } }
+
+        /// <summary>
+        /// Creates a version that has the given trivia token as its
+        /// leading trivia.
+        /// </summary>
+        public Token WithLeadingTrivia(Token Trivia)
+        {
+            return new Token(Symbol, Trivia, Contents, TrailingTrivia);
+        }
+
+        /// <summary>
+        /// Creates a version that has the given trivia token as its
+        /// trailing trivia.
+        /// </summary>
+        public Token WithTrailingTrivia(Token Trivia)
+        {
+            return new Token(Symbol, LeadingTrivia, Contents, Trivia);
+        }
+
+        /// <summary>
+        /// Appends a string representation of this token to the given
+        /// string builder.
+        /// </summary>
+        public void AppendTo(StringBuilder Builder)
+        {
+            if (HasLeadingTrivia)
+                LeadingTrivia.AppendTo(Builder);
+
+            Builder.Append(Contents);
+
+            if (HasTrailingTrivia)
+                TrailingTrivia.AppendTo(Builder);
+        }
+
         public override string ToString()
         {
-            return Symbol + ": " + Contents;
+            StringBuilder sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
         }
     }
 }

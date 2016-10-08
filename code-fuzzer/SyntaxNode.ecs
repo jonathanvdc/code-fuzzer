@@ -52,7 +52,7 @@ namespace CodeFuzzer
 
         public override void AppendTo(StringBuilder Builder)
         {
-            Builder.Append(Value.Contents);
+            Value.AppendTo(Builder);
         }
     }
 

@@ -14,10 +14,12 @@ namespace CodeFuzzer
         {
             this.rules = new Dictionary<string, HashSet<ProductionRule>>();
             this.tokenDefs = new Dictionary<string, ITokenDef>();
+            this.triviaSymbols = new HashSet<string>();
         }
 
         private Dictionary<string, HashSet<ProductionRule>> rules;
         private Dictionary<string, ITokenDef> tokenDefs;
+        private HashSet<string> triviaSymbols;
 
         /// <summary>
         /// Gets the set of all nonterminals in the grammar.
@@ -30,6 +32,11 @@ namespace CodeFuzzer
         public IEnumerable<string> Terminals { get { return tokenDefs.Keys; } }
 
         /// <summary>
+        /// Gets the set of all terminals that represent trivia.
+        /// </summary>
+        public IEnumerable<string> TriviaTerminals { get { return triviaSymbols; } }
+
+        /// <summary>
         /// Gets or sets the start symbol for the grammar.
         /// </summary>
         public string StartSymbol { get; set; }
@@ -38,6 +45,15 @@ namespace CodeFuzzer
         /// Tests if the grammar has a non-null start symbol.
         /// </summary>
         public bool HasStartSymbol { get { return StartSymbol != null; } }
+
+        /// <summary>
+        /// Gets the set of all symbols in the grammar, i.e., the union of the
+        /// sets of terminals and nonterminals.
+        /// </summary>
+        public IEnumerable<string> Symbols
+        {
+            get { return Enumerable.Union<string>(Terminals, Nonterminals); }
+        }
 
         /// <summary>
         /// Tests if the grammar defines the given terminal.
@@ -64,12 +80,11 @@ namespace CodeFuzzer
         }
 
         /// <summary>
-        /// Gets the set of all symbols in the grammar, i.e., the union of the
-        /// sets of terminals and nonterminals.
+        /// Checks if the given terminal is a trivia symbol.
         /// </summary>
-        public IEnumerable<string> Symbols
+        public bool IsTriviaSymbol(string Terminal)
         {
-            get { return Enumerable.Union<string>(Terminals, Nonterminals); }
+            return triviaSymbols.Contains(Terminal);
         }
 
         /// <summary>
@@ -118,6 +133,14 @@ namespace CodeFuzzer
         public void DefineToken(string Terminal, ITokenDef Def)
         {
             tokenDefs[Terminal] = Def;
+        }
+
+        /// <summary>
+        /// Marks the given terminal as trivia.
+        /// </summary>
+        public bool MarkTrivia(string Terminal)
+        {
+            triviaSymbols.Add(Terminal);
         }
     }
 }
