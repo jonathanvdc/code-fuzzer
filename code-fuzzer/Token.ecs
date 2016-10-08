@@ -62,6 +62,14 @@ namespace CodeFuzzer
         public bool HasTrailingTrivia { get { return TrailingTrivia != null; } }
 
         /// <summary>
+        /// Creates a version of this token without trivia.
+        /// </summary>
+        public Token WithoutTrivia()
+        {
+            return new Token(Symbol, Contents);
+        }
+
+        /// <summary>
         /// Creates a version that has the given trivia token as its
         /// leading trivia.
         /// </summary>
@@ -99,6 +107,43 @@ namespace CodeFuzzer
             StringBuilder sb = new StringBuilder();
             AppendTo(sb);
             return sb.ToString();
+        }
+
+        private void AppendToFlatList(List<Token> List)
+        {
+            if (HasLeadingTrivia)
+                LeadingTrivia.AppendToFlatList(List);
+
+            List.Add(WithoutTrivia());
+
+            if (HasTrailingTrivia)
+                TrailingTrivia.AppendToFlatList(List);
+        }
+
+        /// <summary>
+        /// Creates a flat list of trivia and normal tokens from the given
+        /// token. The tokens in the resulting list correspond to the
+        /// top-level and nested tokens in the given token, but do not contain
+        /// any nested tokens. The concatenation of their string representations
+        /// is equal to the given token's string representation.
+        /// </summary>
+        public static IReadOnlyList<Token> FlattenToken(Token Value)
+        {
+            var results = new List<Token>();
+            Value.AppendToFlatList(results);
+            return results;
+        }
+
+        /// <summary>
+        /// Creates a flat list of trivia and normal tokens from the given
+        /// list of tokens.
+        /// </summary>
+        public static IReadOnlyList<Token> FlattenTokenList(IEnumerable<Token> Tokens)
+        {
+            var results = new List<Token>();
+            foreach (var t in Tokens)
+                t.AppendToFlatList(results);
+            return results;
         }
     }
 }

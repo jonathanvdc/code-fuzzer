@@ -21,7 +21,18 @@ namespace CodeFuzzer
         /// Converts this syntax node to a string, and appends it to the given
         /// string builder.
         /// </summary>
-        public abstract void AppendTo(StringBuilder Builder);
+        public virtual void AppendTo(StringBuilder Builder)
+        {
+            var tokList = new List<Token>();
+            AppendTo(tokList);
+            foreach (var t in tokList)
+                t.AppendTo(Builder);
+        }
+
+        /// <summary>
+        /// Appends all tokens in this syntax node to the given token list.
+        /// </summary>
+        public abstract void AppendTo(List<Token> TokenList);
 
         public override string ToString()
         {
@@ -53,6 +64,11 @@ namespace CodeFuzzer
         public override void AppendTo(StringBuilder Builder)
         {
             Value.AppendTo(Builder);
+        }
+
+        public override void AppendTo(List<Token> TokenList)
+        {
+            TokenList.Add(Value);
         }
     }
 
@@ -97,6 +113,12 @@ namespace CodeFuzzer
         {
             foreach (var item in Children)
                 item.AppendTo(Builder);
+        }
+
+        public override void AppendTo(List<Token> TokenList)
+        {
+            foreach (var item in Children)
+                item.AppendTo(TokenList);
         }
     }
 }
