@@ -193,8 +193,10 @@ namespace CodeFuzzer
             int LeadingTriviaDepth, int TrailingTriviaDepth)
         {
             return GenerateTokenWithoutTrivia(Terminal, Rand)
-                .WithLeadingTrivia(GenerateNestedTriviaToken(Rand, LeadingTriviaDepth))
-                .WithLeadingTrivia(GenerateNestedTriviaToken(Rand, TrailingTriviaDepth));
+                .WithLeadingTrivia(
+                    GenerateNestedTriviaToken(Rand, LeadingTriviaDepth))
+                .WithTrailingTrivia(
+                    GenerateNestedTriviaToken(Rand, TrailingTriviaDepth));
         }
     }
 }
