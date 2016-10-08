@@ -10,7 +10,7 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class Grammar
     {
-        public Grammar()
+        public this()
         {
             this.rules = new Dictionary<string, HashSet<ProductionRule>>();
             this.tokenDefs = new Dictionary<string, ITokenDef>();
