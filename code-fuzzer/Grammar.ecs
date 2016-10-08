@@ -15,11 +15,13 @@ namespace CodeFuzzer
             this.rules = new Dictionary<string, HashSet<ProductionRule>>();
             this.tokenDefs = new Dictionary<string, ITokenDef>();
             this.triviaSymbols = new HashSet<string>();
+            this.triviaSymList = new List<string>();
         }
 
         private Dictionary<string, HashSet<ProductionRule>> rules;
         private Dictionary<string, ITokenDef> tokenDefs;
         private HashSet<string> triviaSymbols;
+        private List<string> triviaSymList;
 
         /// <summary>
         /// Gets the set of all nonterminals in the grammar.
@@ -140,7 +142,59 @@ namespace CodeFuzzer
         /// </summary>
         public bool MarkTrivia(string Terminal)
         {
-            triviaSymbols.Add(Terminal);
+            if (triviaSymbols.Add(Terminal))
+                triviaSymList.Add(Terminal);
+        }
+
+        /// <summary>
+        /// Randomly generate a token that belongs to the given terminal,
+        /// without any trivia.
+        /// </summary>>
+        public Token GenerateTokenWithoutTrivia(string Terminal, Random Rand)
+        {
+            return new Token(Terminal, GetTokenDef(Terminal).Generate(Rand));
+        }
+
+        /// <summary>
+        /// Picks a random trivia symbol, and generates a token for that symbol.
+        /// If no trivia symbols have been defined for this grammar, then 'null'
+        /// is returned.
+        /// </summary>
+        public Token GenerateSimpleTriviaToken(Random Rand)
+        {
+            if (triviaSymList.Count == 0)
+                return null;
+            else
+                return GenerateTokenWithoutTrivia(
+                    Helpers.PickRandomElement<string>(triviaSymList, Rand),
+                    Rand);
+        }
+
+        /// <summary>
+        /// Generates a trivia token that contains the given number of nested
+        /// leading trivia tokens. If no trivia symbols have been defined
+        /// for this grammar, then 'null' is returned.
+        /// </summary>
+        public Token GenerateNestedTriviaToken(Random Rand, int Depth)
+        {
+            var simpleToken = GenerateSimpleTriviaToken(Rand);
+            if (Depth <= 0 || simpleToken == null)
+                return simpleToken;
+            else
+                return simpleToken.WithLeadingTrivia(
+                    GenerateNestedTriviaToken(Rand, Depth - 1));
+        }
+
+        /// <summary>
+        /// Generates a token that belongs to the given terminal, with trivia.
+        /// </summary>
+        public Token GenerateTokenWithTrivia(
+            string Terminal, Random Rand,
+            int LeadingTriviaDepth, int TrailingTriviaDepth)
+        {
+            return GenerateTokenWithoutTrivia(Terminal, Rand)
+                .WithLeadingTrivia(GenerateNestedTriviaToken(Rand, LeadingTriviaDepth))
+                .WithLeadingTrivia(GenerateNestedTriviaToken(Rand, TrailingTriviaDepth));
         }
     }
 }
