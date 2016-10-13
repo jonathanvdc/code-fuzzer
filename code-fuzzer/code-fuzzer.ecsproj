@@ -8,6 +8,7 @@
         <RuntimeLibrary Include="System" />
         <RuntimeLibrary Include="System.Core" />
     </ItemGroup>
+    <Compile Include="ForwardSlice.ecs" />
     <Compile Include="Grammar.ecs" />
     <Compile Include="Helpers.ecs" />
     <Compile Include="ITokenDef.ecs" />

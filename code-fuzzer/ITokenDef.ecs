@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace CodeFuzzer
 {
@@ -9,9 +10,11 @@ namespace CodeFuzzer
     public interface ITokenDef
     {
         /// <summary>
-        /// Checks if the given value is defined by this token definition.
+        /// Reads a token of this type from the given string slice. The length
+        /// of the token is then returned. If the front of the slice does not
+        /// define such a token, then zero is returned.
         /// </summary>
-        bool Defines(string Value);
+        int Read(ForwardSlice Slice);
 
         /// <summary>
         /// Generates a new token value.
