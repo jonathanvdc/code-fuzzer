@@ -109,6 +109,24 @@ namespace CodeFuzzer
             return sb.ToString();
         }
 
+        public override int GetHashCode()
+        {
+            return (Symbol.GetHashCode() << 16) ^ (Contents.GetHashCode());
+        }
+
+        public bool Equals(Token Other)
+        {
+            return Symbol == Other.Symbol
+                && object.Equals(LeadingTrivia, Other.LeadingTrivia)
+                && Contents == Other.Contents
+                && object.Equals(TrailingTrivia, Other.TrailingTrivia);
+        }
+
+        public override bool Equals(object Other)
+        {
+            return Other is Token && Equals((Token)Other);
+        }
+
         private void AppendToFlatList(List<Token> List)
         {
             if (HasLeadingTrivia)

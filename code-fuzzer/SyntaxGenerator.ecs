@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+
+namespace CodeFuzzer
+{
+    public class SyntaxGenerator
+    {
+        public this(
+            Random Rand, Grammar SyntaxGrammar, string SeparatorTriviaTerminal)
+            : this(
+                Rand, SyntaxGrammar, SeparatorTriviaTerminal,
+                new Lexer("<unknown>", SyntaxGrammar))
+        { }
+
+        public this(
+            Random Rand, Grammar SyntaxGrammar,
+            string SeparatorTriviaTerminal, Lexer Tokenizer)
+            : this(Rand, SyntaxGrammar, SeparatorTriviaTerminal, Tokenizer, 3)
+        { }
+
+        public this(
+            Random Rand, Grammar SyntaxGrammar,
+            string SeparatorTriviaTerminal, Lexer Tokenizer,
+            int MaxTrivia)
+        {
+            this.rand = Rand;
+            this.grammar = SyntaxGrammar;
+            this.sepSymbol = SeparatorTriviaTerminal;
+            this.lexer = Tokenizer;
+            this.maxTrivia = MaxTrivia;
+        }
+
+        private Random rand;
+        private Grammar grammar;
+        private Lexer lexer;
+        private int maxTrivia;
+
+        // A terminal that is used as a separator, to remove ambiguity.
+        private string sepSymbol;
+
+        /// <summary>
+        /// Randomly generates a syntax node for the given symbol.
+        /// </summary>
+        public SyntaxNode GenerateSyntaxNode(string Symbol)
+        {
+            if (grammar.DefinesTerminal(Symbol))
+            {
+                return new TokenNode(
+                    grammar.GenerateTokenWithTrivia(
+                        Symbol, rand,
+                        rand.Next(0, maxTrivia + 1),
+                        rand.Next(0, maxTrivia + 1)));
+            }
+            else if (grammar.DefinesNonterminal(Symbol))
+            {
+                var rule = Helpers.PickRandomElement<ProductionRule>(
+                    Enumerable.ToArray<ProductionRule>(
+                        grammar.GetProductionRules(Symbol)),
+                    rand);
+
+                var children = new List<SyntaxNode>();
+                foreach (var item in rule.Body)
+                    children.Add(GenerateSyntaxNode(item));
+
+                return new ProductionNode(Symbol, children);
+            }
+            else
+            {
+                throw new Exception(
+                    "'" + Symbol + "' is neither a terminal nor a nonterminal.");
+            }
+        }
+
+        /// <summary>
+        /// Converts the given list of tokens to a flat, exact token
+        /// list. This may insert some trivia tokens to make sure that
+        /// nontrivial tokens are not merged.
+        /// For example, `(identifier, "herp") (identifier, "derp")`
+        /// will be converted to `(identifier, "herp") (trivia) (identifier, "derp")`,
+        /// to keep the lexer from merging the identifier tokens.
+        /// </summary>
+        public IReadOnlyList<Token> ToFlatExactTokenList(
+            IReadOnlyList<Token> Tokens)
+        {
+            var flatList = Token.FlattenTokenList(Tokens);
+            var flatSb = new StringBuilder();
+            foreach (var item in flatList)
+                item.AppendTo(flatSb);
+
+            var flatSlice = new ForwardSlice(flatSb.ToString());
+            var results = new List<Token>();
+            for (int i = 0; i < flatList.Count; i++)
+            {
+                var tok = lexer.Read(flatSlice);
+                var expected = flatList[i];
+                if (!tok.Equals(expected))
+                {
+                    // Insert a separator token.
+                    results.Add(
+                        grammar.GenerateTokenWithoutTrivia(sepSymbol, rand));
+                }
+
+                flatSlice.Pop(expected.Contents.Length);
+                results.Add(expected);
+            }
+            return results;
+        }
+    }
+}

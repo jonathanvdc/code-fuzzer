@@ -36,5 +36,13 @@ namespace CodeFuzzer
         {
             return List[Rand.Next(0, List.Count)];
         }
+
+        /// <summary>
+        /// Randomly picks an element from the given list.
+        /// </summary>
+        public static T PickRandomElement<T>(T[] List, Random Rand)
+        {
+            return List[Rand.Next(0, List.Length)];
+        }
     }
 }
