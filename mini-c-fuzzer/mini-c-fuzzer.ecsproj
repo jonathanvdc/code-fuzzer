@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Name="compare-test" >
+    <Setter Property="TargetPlatform" Value="clr" />
+    <Setter Property="AssemblyName" Value="mini-c-fuzzer" />
+    <Option Key="asm-version" Value="0.1.0" />
+    <ItemGroup>
+        <RuntimeLibrary Include="PortableRT" />
+        <RuntimeLibrary Include="System" />
+        <RuntimeLibrary Include="System.Core" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="../code-fuzzer/bin/code-fuzzer.dll" />
+    </ItemGroup>
+    <Compile Include="Program.ecs" />
+    <Compile Include="StringLiteralDef.ecs" />
+</Project>
