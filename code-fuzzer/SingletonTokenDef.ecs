@@ -1,0 +1,40 @@
+using System;
+using LeMP;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A token definition for tokens that have only one possible
+    /// string representation.
+    /// </summary>
+    public class SingletonTokenDef
+    {
+        public this(set string Contents)
+        { }
+
+        /// <summary>
+        /// Gets the contents of the singleton token.
+        /// </summary>
+        public string Contents { get; private set; }
+
+        /// <summary>
+        /// Reads a token of this type from the given string slice. The length
+        /// of the token is then returned. If the front of the slice does not
+        /// define such a token, then zero is returned.
+        /// </summary>
+        public int Read(ForwardSlice Slice)
+        {
+            return Slice.Peek(Contents.Length) == Contents
+                ? Contents.Length
+                : 0;
+        }
+
+        /// <summary>
+        /// Generates a new token value.
+        /// </summary>
+        public string Generate(Random Rand)
+        {
+            return Contents;
+        }
+    }
+}

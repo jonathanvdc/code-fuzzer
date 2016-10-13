@@ -17,6 +17,7 @@
     <Compile Include="Lexer.ecs" />
     <Compile Include="ProductionRule.ecs" />
     <Compile Include="SingleLineCommentDef.ecs" />
+    <Compile Include="SingletonTokenDef.ecs" />
     <Compile Include="SyntaxGenerator.ecs" />
     <Compile Include="SyntaxNode.ecs" />
     <Compile Include="Token.ecs" />
