@@ -216,7 +216,7 @@ namespace MiniCFuzzer
             //              | "if" "(" exp ")" stmt ["else" stmt]   # if then else
             grammar.AddProductionRule("stmt", new string[]
             {
-                "IF", "LPAR", "exp", "RPAR",
+                "IF", "LPAR", "exp", "RPAR", "stmt",
                 grammar.AddOptionalRule(
                     grammar.AddConcatRule(new string[] { "ELSE", "stmt" }))
             });
