@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using LeMP;
 
 namespace CodeFuzzer
@@ -43,6 +44,20 @@ namespace CodeFuzzer
         public static T PickRandomElement<T>(T[] List, Random Rand)
         {
             return List[Rand.Next(0, List.Length)];
+        }
+
+        /// <summary>
+        /// Generates a random concatenation of the given set of characters.
+        /// The resulting string has the specified length.
+        /// </summary>
+        public static string GenerateRandomString(
+            char[] Characters, int Length, Random Rand)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < Length; i++)
+                sb.Append(PickRandomElement<char>(Characters, Rand));
+
+            return sb.ToString();
         }
     }
 }

@@ -1,0 +1,39 @@
+using System;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A token definition for simple integers.
+    /// </summary>
+    public class IntegerDef : ITokenDef
+    {
+        private this()
+        { }
+
+        private static IntegerDef inst = new IntegerDef();
+        public static IntegerDef Instance { get { return inst; } }
+
+        /// <summary>
+        /// Reads a token of this type from the given string slice. The length
+        /// of the token is then returned. If the front of the slice does not
+        /// define such a token, then zero is returned.
+        /// </summary>
+        public int Read(ForwardSlice Slice)
+        {
+            int i = 0;
+            char c;
+            while (Slice.TryPop(out c) && char.IsDigit(c))
+                i++;
+
+            return i;
+        }
+
+        /// <summary>
+        /// Generates a new token value.
+        /// </summary>
+        public string Generate(Random Rand)
+        {
+            return Rand.Next(0, int.MaxValue).ToString();
+        }
+    }
+}

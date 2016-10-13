@@ -1,0 +1,65 @@
+using System;
+using LeMP;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A token definition for simple, C-style identifiers.
+    /// </summary>
+    public class IdentifierDef : ITokenDef
+    {
+        public this(set int MaxIdentifierLength)
+        { }
+
+        /// <summary>
+        /// Gets the maximal length of identifiers.
+        /// </summary>
+        public int MaxIdentifierLength { get; private set; }
+
+        /// <summary>
+        /// Reads a token of this type from the given string slice. The length
+        /// of the token is then returned. If the front of the slice does not
+        /// define such a token, then zero is returned.
+        /// </summary>
+        public int Read(ForwardSlice Slice)
+        {
+            int i = 0;
+            char c;
+            if (!Slice.TryPeek(out c) || (c != '_' && !char.IsLetter(c)))
+                // First character must be an underscore or a letter
+                return 0;
+
+            while (Slice.TryPop(out c) && (c == '_' || char.IsLetterOrDigit(c)))
+                i++;
+
+            return i;
+        }
+
+        private static char[] firstChars = new char[]
+        {
+            '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+
+        private static char[] nextChars = new char[]
+        {
+            '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'U', 'V', 'W', 'X', 'Y', 'Z' ,
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        };
+
+        /// <summary>
+        /// Generates a new token value.
+        /// </summary>
+        public string Generate(Random Rand)
+        {
+            return Helpers.PickRandomElement<char>(firstChars, Rand).ToString()
+                + Helpers.GenerateRandomString(
+                    nextChars, Rand.Next(0, MaxIdentifierLength), Rand);
+        }
+    }
+}
