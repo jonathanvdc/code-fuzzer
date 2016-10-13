@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using LeMP;
 
 namespace CodeFuzzer
@@ -42,6 +43,24 @@ namespace CodeFuzzer
                 result = (result << 2) ^ item.GetHashCode();
 
             return result;
+        }
+
+        public void AppendTo(StringBuilder Builder)
+        {
+            Builder.Append(Symbol);
+            Builder.Append(" ->");
+            foreach (var item in Body)
+            {
+                Builder.Append(" ");
+                Builder.Append(item);
+            }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            AppendTo(sb);
+            return sb.ToString();
         }
     }
 }
