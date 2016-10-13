@@ -7,11 +7,8 @@ namespace CodeFuzzer
     /// </summary>
     public class IntegerDef : ITokenDef
     {
-        private this()
+        public this()
         { }
-
-        private static IntegerDef inst = new IntegerDef();
-        public static IntegerDef Instance { get { return inst; } }
 
         /// <summary>
         /// Reads a token of this type from the given string slice. The length

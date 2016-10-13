@@ -11,7 +11,7 @@ namespace CodeFuzzer
     public class MultiLineCommentDef : ITokenDef
     {
         public this(
-            set string Prefix, set string Suffix, int MaxCommentLength)
+            set string Prefix, set string Suffix, set int MaxCommentLength)
         { }
 
         /// <summary>
@@ -57,8 +57,12 @@ namespace CodeFuzzer
 
         static this()
         {
-            validChars = new char[0x7E - 0x20];
-            for (int i = 0; i < validChars.Length; i++)
+            validChars = new char[0x7E - 0x20 + 4];
+            validChars[0] = ' ';
+            validChars[1] = '\n';
+            validChars[2] = '\t';
+            validChars[3] = '\r';
+            for (int i = 4; i < validChars.Length; i++)
                 validChars[i] = (char)(i + 0x20);
         }
         private static char[] validChars;
@@ -68,11 +72,13 @@ namespace CodeFuzzer
         /// </summary>
         public string Generate(Random Rand)
         {
-            return Prefix
-                + Helpers.GenerateRandomString(
-                    validChars, Rand.Next(0, MaxCommentLength), Rand)
-                    .Replace(Suffix, "")
-                + Suffix;
+            string contents = Helpers.GenerateRandomString(
+                validChars, Rand.Next(0, MaxCommentLength), Rand);
+
+            while (contents.IndexOf(Suffix) >= 0)
+                contents = contents.Replace(Suffix, "");
+
+            return Prefix + contents + Suffix;
         }
     }
 }

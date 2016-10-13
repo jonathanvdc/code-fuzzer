@@ -7,7 +7,7 @@ namespace CodeFuzzer
     /// A token definition for tokens that have only one possible
     /// string representation.
     /// </summary>
-    public class SingletonTokenDef
+    public class SingletonTokenDef : ITokenDef
     {
         public this(set string Contents)
         { }

@@ -17,7 +17,7 @@ namespace CodeFuzzer
         public this(
             Random Rand, Grammar SyntaxGrammar,
             string SeparatorTriviaTerminal, Lexer Tokenizer)
-            : this(Rand, SyntaxGrammar, SeparatorTriviaTerminal, Tokenizer, 3)
+            : this(Rand, SyntaxGrammar, SeparatorTriviaTerminal, Tokenizer, 1)
         { }
 
         public this(
@@ -95,15 +95,16 @@ namespace CodeFuzzer
             {
                 var tok = lexer.Read(flatSlice);
                 var expected = flatList[i];
+
+                flatSlice.Pop(expected.Contents.Length);
+                results.Add(expected);
+
                 if (!tok.Equals(expected))
                 {
                     // Insert a separator token.
                     results.Add(
                         grammar.GenerateTokenWithoutTrivia(sepSymbol, rand));
                 }
-
-                flatSlice.Pop(expected.Contents.Length);
-                results.Add(expected);
             }
             return results;
         }

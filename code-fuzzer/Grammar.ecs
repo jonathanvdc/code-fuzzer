@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace CodeFuzzer
 {
@@ -122,6 +123,90 @@ namespace CodeFuzzer
         }
 
         /// <summary>
+        /// Adds the given production rule to the grammar. If the rule was
+        /// already present, then 'false' is returned. Otherwise, 'true' is
+        /// returned.
+        /// </summary>
+        public bool AddProductionRule(string Symbol, IEnumerable<string> Body)
+        {
+            return AddProductionRule(
+                new ProductionRule(Symbol, new List<string>(Body)));
+        }
+
+        /// <summary>
+        /// Adds or retrieves a rule that represents a fixed-size sequence of
+        /// the given symbol followed by an unbounded sequence of the given
+        /// symbol.
+        /// </summary>
+        public string AddStarRule(string Symbol, int MinCount)
+        {
+            string starSym = Symbol + "*" + MinCount.ToString();
+            AddProductionRule(starSym, Enumerable.Repeat<string>(Symbol, MinCount));
+            AddProductionRule(starSym, new string[] { Symbol, starSym });
+            return starSym;
+        }
+
+        /// <summary>
+        /// Adds or retrieves a rule that represents an unbounded sequence
+        /// of the given symbol.
+        /// </summary>
+        public string AddStarRule(string Symbol)
+        {
+            return AddStarRule(Symbol, 0);
+        }
+
+        /// <summary>
+        /// Adds a rule that evaluates to either the given symbol, or the empty
+        /// string.
+        /// </summary>
+        public string AddOptionalRule(string Symbol)
+        {
+            string optSym = Symbol + "?";
+            AddProductionRule(optSym, Enumerable.Empty<string>());
+            AddProductionRule(optSym, new string[] { Symbol });
+            return optSym;
+        }
+
+        /// <summary>
+        /// Creates a rule that evaluates to exactly one of the given symbols.
+        /// </summary>
+        public string AddAltRule(IEnumerable<string> Symbols)
+        {
+            var sb = new StringBuilder();
+            foreach (var item in Symbols)
+            {
+                if (sb.Length > 0)
+                    sb.Append("|");
+
+                sb.Append(item);
+            }
+            string sym = sb.ToString();
+            foreach (var item in Symbols)
+            {
+                AddProductionRule(sym, new string[] { item });
+            }
+            return sym;
+        }
+
+        /// <summary>
+        /// Creates a rule that is the concatentation of the given set of rules.
+        /// </summary>
+        public string AddConcatRule(IEnumerable<string> Symbols)
+        {
+            var sb = new StringBuilder();
+            foreach (var item in Symbols)
+            {
+                if (sb.Length > 0)
+                    sb.Append("+");
+
+                sb.Append(item);
+            }
+            string sym = sb.ToString();
+            AddProductionRule(sym, Symbols);
+            return sym;
+        }
+
+        /// <summary>
         /// Gets the token definition for the given terminal.
         /// </summary>
         public ITokenDef GetTokenDef(string Terminal)
@@ -142,8 +227,10 @@ namespace CodeFuzzer
         /// </summary>
         public bool MarkTrivia(string Terminal)
         {
-            if (triviaSymbols.Add(Terminal))
+            bool result = triviaSymbols.Add(Terminal);
+            if (result)
                 triviaSymList.Add(Terminal);
+            return result;
         }
 
         /// <summary>
@@ -177,9 +264,12 @@ namespace CodeFuzzer
         /// </summary>
         public Token GenerateNestedTriviaToken(Random Rand, int Depth)
         {
+            if (Depth <= 0)
+                return null;
+
             var simpleToken = GenerateSimpleTriviaToken(Rand);
-            if (Depth <= 0 || simpleToken == null)
-                return simpleToken;
+            if (simpleToken == null)
+                return null;
             else
                 return simpleToken.WithLeadingTrivia(
                     GenerateNestedTriviaToken(Rand, Depth - 1));

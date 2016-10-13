@@ -5,11 +5,8 @@ using System;
 /// </summary>
 public class WhitespaceDef : ITokenDef
 {
-    private this()
+    public this()
     { }
-
-    private static WhitespaceDef inst = new WhitespaceDef();
-    public static WhitespaceDef Instance { get { return inst; } }
 
     /// <summary>
     /// Reads a token of this type from the given string slice. The length

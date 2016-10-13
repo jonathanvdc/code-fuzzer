@@ -14,12 +14,12 @@ namespace CodeFuzzer
             set string Prefix, IEnumerable<char> Terminators,
             set int MaxCommentLength)
         {
-            this.terms = new HashSet<char>(Terminators);
-            this.termArr = Enumerable.ToArray<char>(terms);
-            List<char> validCharList = new List<char>();
+            this.termArr = Enumerable.ToArray<char>(Terminators);
+            this.terms = new HashSet<char>(termArr);
+            var validCharList = new List<char>();
             for (char i = (char)0x20; i <= (char)0xFE; i++)
             {
-                if (terms.Contains(i))
+                if (!terms.Contains(i))
                     validCharList.Add(i);
             }
             this.validChars = validCharList.ToArray();
