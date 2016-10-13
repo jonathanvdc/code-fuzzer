@@ -107,5 +107,20 @@ namespace CodeFuzzer
             }
             return results;
         }
+
+        /// <summary>
+        /// Generates a string of source code for the given symbol.
+        /// </summary>
+        public string GenerateSourceCode(string Symbol)
+        {
+            var node = GenerateSyntaxNode(Symbol);
+            var tokenList = new List<Token>();
+            node.AppendTo(tokenList);
+            var flatTokenList = ToFlatExactTokenList(tokenList);
+            var sb = new StringBuilder();
+            foreach (var item in flatTokenList)
+                item.AppendTo(sb);
+            return sb.ToString();
+        }
     }
 }
