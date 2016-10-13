@@ -20,4 +20,5 @@
     <Compile Include="SyntaxGenerator.ecs" />
     <Compile Include="SyntaxNode.ecs" />
     <Compile Include="Token.ecs" />
+    <Compile Include="WhitespaceDef.ecs" />
 </Project>
