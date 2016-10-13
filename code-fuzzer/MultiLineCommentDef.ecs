@@ -6,43 +6,28 @@ using LeMP;
 namespace CodeFuzzer
 {
     /// <summary>
-    /// A token definition for single-line comments.
+    /// A token definition for multi-line comments.
     /// </summary>
-    public class SingleLineCommentDef : ITokenDef
+    public class MultiLineCommentDef : ITokenDef
     {
         public this(
-            set string Prefix, IEnumerable<char> Terminators,
-            set int MaxCommentLength)
-        {
-            this.terms = new HashSet<char>(Terminators);
-            this.termArr = Enumerable.ToArray<char>(terms);
-            List<char> validCharList = new List<char>();
-            for (char i = (char)0x20; i <= (char)0xFE; i++)
-            {
-                if (terms.Contains(i))
-                    validCharList.Add(i);
-            }
-            this.validChars = validCharList.ToArray();
-        }
+            set string Prefix, set string Suffix, int MaxCommentLength)
+        { }
 
         /// <summary>
-        /// Gets the prefix that starts a single-line comment.
+        /// Gets the prefix that starts a multi-line comment.
         /// </summary>
         public string Prefix { get; private set; }
 
         /// <summary>
-        /// Gets the set of terminators for this single-line comment definition.
+        /// Gets the suffix that ends a multi-line comment.
         /// </summary>
-        public IEnumerable<char> Terminators { get { return terms; } }
+        public string Suffix { get; private set; }
 
         /// <summary>
         /// Gets the maximum length of a comment's contents.
         /// </summary>
         public int MaxCommentLength { get; private set; }
-
-        private HashSet<char> terms;
-        private char[] termArr;
-        private char[] validChars;
 
         /// <summary>
         /// Reads a token of this type from the given string slice. The length
@@ -55,18 +40,28 @@ namespace CodeFuzzer
                 return 0;
 
             int i = Prefix.Length;
-            char c;
-            while (Slice.TryPop(out c) && !terms.Contains(c))
-                i++;
-
-            if (Slice.TryPop(out c))
+            while (Slice.Peek(Suffix.Length) != Suffix)
             {
-                // assert(terms.Contains(c))
                 i++;
+                char c;
+                if (!Slice.TryPop(out c))
+                    // We encountered the EOF before we encountered the suffix.
+                    return 0;
             }
 
-            return i;
+            // Pop the suffix.
+            Slice.Pop(Suffix.Length);
+
+            return i + Suffix.Length;
         }
+
+        static this()
+        {
+            validChars = new char[0x7E - 0x20];
+            for (int i = 0; i < validChars.Length; i++)
+                validChars[i] = (char)(i + 0x20);
+        }
+        private static char[] validChars;
 
         /// <summary>
         /// Generates a new token value.
@@ -76,7 +71,8 @@ namespace CodeFuzzer
             return Prefix
                 + Helpers.GenerateRandomString(
                     validChars, Rand.Next(0, MaxCommentLength), Rand)
-                + Helpers.PickRandomElement<char>(termArr, Rand).ToString();
+                    .Replace(Suffix, "")
+                + Suffix;
         }
     }
 }

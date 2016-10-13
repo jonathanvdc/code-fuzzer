@@ -15,6 +15,7 @@
     <Compile Include="IntegerDef.ecs" />
     <Compile Include="ITokenDef.ecs" />
     <Compile Include="Lexer.ecs" />
+    <Compile Include="MultiLineCommentDef.ecs" />
     <Compile Include="ProductionRule.ecs" />
     <Compile Include="SingleLineCommentDef.ecs" />
     <Compile Include="SingletonTokenDef.ecs" />
