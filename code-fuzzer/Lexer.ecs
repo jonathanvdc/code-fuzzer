@@ -1,0 +1,128 @@
+using System;
+using System.Collections.Generic;
+
+namespace CodeFuzzer
+{
+    /// <summary>
+    /// A simple, maximal-munch lexer.
+    /// </summary>
+    public sealed class Lexer
+    {
+        public this(string UnknownTerminal)
+        {
+            this.UnknownTerminal = UnknownTerminal;
+            this.tokens = new Dictionary<string, KeyValuePair<ITokenDef, int>>();
+        }
+
+        public this(string UnknownTerminal, Grammar TokenGrammar)
+            : this(UnknownTerminal)
+        {
+            foreach (var item in TokenGrammar.Terminals)
+                DefineToken(item, TokenGrammar.GetTokenDef(item));
+        }
+
+        /// <summary>
+        /// Gets the terminal for unknown tokens.
+        /// </summary>
+        public string UnknownTerminal { get; private set; }
+
+        private Dictionary<string, KeyValuePair<ITokenDef, int>> tokens;
+
+        /// <summary>
+        /// Associates the given token with the given token definition, and
+        /// assigns it the given precedence.
+        /// </summary>
+        public void DefineToken(string Terminal, ITokenDef Def, int Precedence)
+        {
+            tokens[Terminal] = new KeyValuePair<ITokenDef, int>(Def, Precedence);
+        }
+
+        /// <summary>
+        /// Associates the given token with the given token definition, and
+        /// assigns it the default precedence.
+        /// </summary>
+        public void DefineToken(string Terminal, ITokenDef Def)
+        {
+            DefineToken(Terminal, Def, 0);
+        }
+
+        /// <summary>
+        /// Sets the given terminal's precedence to the given value.
+        /// </summary>
+        public void DefineTokenPrecedence(string Terminal, int Precedence)
+        {
+            tokens[Terminal] = new KeyValuePair<ITokenDef, int>(
+                tokens[Terminal].Key, Precedence);
+        }
+
+        /// <summary>
+        /// Parses a single token from the given forward slice, and lists
+        /// all possible parses for this token.
+        /// </summary>
+        public IReadOnlyList<Token> ReadAmbiguous(ForwardSlice Slice)
+        {
+            var results = new List<Token>();
+            int len = 0;
+            int prec = 0;
+            foreach (var pair in tokens)
+            {
+                int i = pair.Value.Key.Read(Slice);
+                if (i > 0)
+                {
+                    int tokPrec = pair.Value.Value;
+                    if (i < len)
+                        continue;
+
+                    if (i == len && tokPrec < prec)
+                        continue;
+
+                    if (i > len || tokPrec > prec)
+                        results = new List<Token>();
+
+                    len = i;
+                    prec = tokPrec;
+                    results.Add(new Token(pair.Key, Slice.Substring(i)));
+                }
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Reads a single token from the given forward slice. Ambiguous tokens
+        /// sets are converted to 'unknown' tokens.
+        /// </summary>
+        public Token Read(ForwardSlice Slice)
+        {
+            var result = ReadAmbiguous(Slice);
+            if (result.Count == 1)
+                return result[0];
+            else if (result.Count > 1)
+                return new Token(UnknownTerminal, result[0].Contents);
+            else
+                return new Token(UnknownTerminal, Slice.Pop(1));
+        }
+
+        /// <summary>
+        /// Parses the given forward slice as a list of tokens.
+        /// </summary>
+        public IReadOnlyList<Token> ReadAll(ForwardSlice Slice)
+        {
+            var result = new List<Token>();
+            while (!Slice.IsEmpty)
+            {
+                var tok = Read(Slice);
+                Slice.Pop(tok.Contents.Length);
+                result.Add(tok);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Parses the given string as a list of tokens.
+        /// </summary>
+        public IReadOnlyList<Token> ReadAll(string Value)
+        {
+            return ReadAll(new ForwardSlice(Value));
+        }
+    }
+}

@@ -12,6 +12,7 @@
     <Compile Include="Grammar.ecs" />
     <Compile Include="Helpers.ecs" />
     <Compile Include="ITokenDef.ecs" />
+    <Compile Include="Lexer.ecs" />
     <Compile Include="ProductionRule.ecs" />
     <Compile Include="SyntaxNode.ecs" />
     <Compile Include="Token.ecs" />

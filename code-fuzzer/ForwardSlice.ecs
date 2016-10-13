@@ -8,7 +8,7 @@ namespace CodeFuzzer
     /// </summary>
     public struct ForwardSlice
     {
-        public ForwardSlice(string Value)
+        public this(string Value)
         {
             this.pos = 0;
             this.val = Value;
