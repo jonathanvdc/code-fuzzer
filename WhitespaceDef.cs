@@ -1,11 +1,14 @@
 using System;
 
+namespace CodeFuzzer
+{
+
 /// <summary>
 /// A token definition for whitespace.
 /// </summary>
 public class WhitespaceDef : ITokenDef
 {
-    public this()
+    public WhitespaceDef()
     { }
 
     /// <summary>
@@ -28,4 +31,6 @@ public class WhitespaceDef : ITokenDef
     {
         return Helpers.PickRandomElement<string>(wsChars, Rand);
     }
+}
+
 }

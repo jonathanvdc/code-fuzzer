@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -10,10 +9,12 @@ namespace CodeFuzzer
     /// </summary>
     public class SingleLineCommentDef : ITokenDef
     {
-        public this(
-            set string Prefix, IEnumerable<char> Terminators,
-            set int MaxCommentLength)
+        public SingleLineCommentDef(
+            string Prefix, IEnumerable<char> Terminators,
+            int MaxCommentLength)
         {
+            this.Prefix = Prefix;
+            this.MaxCommentLength = MaxCommentLength;
             this.termArr = Enumerable.ToArray<char>(Terminators);
             this.terms = new HashSet<char>(termArr);
             var validCharList = new List<char>();

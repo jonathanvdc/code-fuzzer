@@ -7,7 +7,7 @@ namespace CodeFuzzer
     /// </summary>
     public class IntegerDef : ITokenDef
     {
-        public this()
+        public IntegerDef()
         { }
 
         /// <summary>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeFuzzer;
-using LeMP;
 
 namespace MiniCFuzzer
 {
@@ -12,10 +11,13 @@ namespace MiniCFuzzer
     /// </summary>
     public class StringLiteralDef : ITokenDef
     {
-        public this(
-            set char Delimiter, IEnumerable<char> EscapableCharacters,
-            set int MinStringLength, set int MaxStringLength)
+        public StringLiteralDef(
+            char Delimiter, IEnumerable<char> EscapableCharacters,
+            int MinStringLength, int MaxStringLength)
         {
+            this.Delimiter = Delimiter;
+            this.MinStringLength = MinStringLength;
+            this.MaxStringLength = MaxStringLength;
             this.escCharArr = Enumerable.ToArray<char>(EscapableCharacters);
             this.escCharSet = new HashSet<char>(escCharArr);
             List<char> validCharList = new List<char>();

@@ -7,20 +7,20 @@ namespace CodeFuzzer
 {
     public class SyntaxGenerator
     {
-        public this(
+        public SyntaxGenerator(
             Random Rand, Grammar SyntaxGrammar, string SeparatorTriviaTerminal)
             : this(
                 Rand, SyntaxGrammar, SeparatorTriviaTerminal,
                 new Lexer("<unknown>", SyntaxGrammar))
         { }
 
-        public this(
+        public SyntaxGenerator(
             Random Rand, Grammar SyntaxGrammar,
             string SeparatorTriviaTerminal, Lexer Tokenizer)
             : this(Rand, SyntaxGrammar, SeparatorTriviaTerminal, Tokenizer, 1)
         { }
 
-        public this(
+        public SyntaxGenerator(
             Random Rand, Grammar SyntaxGrammar,
             string SeparatorTriviaTerminal, Lexer Tokenizer,
             int MaxTrivia)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -10,26 +9,31 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class Token
     {
-        public this(string Symbol, string Contents)
+        public Token(string Symbol, string Contents)
             : this(Symbol, null, Contents, null)
         { }
 
-        public this(
+        public Token(
             string Symbol, Token LeadingTrivia,
             string Contents)
             : this(Symbol, LeadingTrivia, Contents, null)
         { }
 
 
-        public this(
+        public Token(
             string Symbol, string Contents, Token TrailingTrivia)
             : this(Symbol, null, Contents, TrailingTrivia)
         { }
 
-        public this(
-            set string Symbol, set Token LeadingTrivia,
-            set string Contents, set Token TrailingTrivia)
-        { }
+        public Token(
+            string Symbol, Token LeadingTrivia,
+            string Contents, Token TrailingTrivia)
+        {
+            this.Symbol = Symbol;
+            this.LeadingTrivia = LeadingTrivia;
+            this.Contents = Contents;
+            this.TrailingTrivia = TrailingTrivia;
+        }
 
         /// <summary>
         /// Gets the terminal this token belongs to.

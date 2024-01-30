@@ -22,7 +22,7 @@ namespace MiniCFuzzer
             Console.Write(result);
         }
 
-        static this()
+        static Program()
         {
             grammar = new Grammar();
 

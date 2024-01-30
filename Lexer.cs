@@ -8,13 +8,13 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class Lexer
     {
-        public this(string UnknownTerminal)
+        public Lexer(string UnknownTerminal)
         {
             this.UnknownTerminal = UnknownTerminal;
             this.tokens = new Dictionary<string, KeyValuePair<ITokenDef, int>>();
         }
 
-        public this(string UnknownTerminal, Grammar TokenGrammar)
+        public Lexer(string UnknownTerminal, Grammar TokenGrammar)
             : this(UnknownTerminal)
         {
             foreach (var item in TokenGrammar.Terminals)

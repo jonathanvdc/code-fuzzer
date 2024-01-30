@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -11,8 +10,11 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class ProductionRule : IEquatable<ProductionRule>
     {
-        public this(set string Symbol, set IReadOnlyList<string> Body)
-        { }
+        public ProductionRule(string Symbol, IReadOnlyList<string> Body)
+        {
+            this.Symbol = Symbol;
+            this.Body = Body;
+        }
 
         /// <summary>
         /// Gets this production rule's nonterminal.

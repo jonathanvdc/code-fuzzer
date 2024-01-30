@@ -1,5 +1,4 @@
 using System;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -9,8 +8,10 @@ namespace CodeFuzzer
     /// </summary>
     public class SingletonTokenDef : ITokenDef
     {
-        public this(set string Contents)
-        { }
+        public SingletonTokenDef(string Contents)
+        {
+            this.Contents = Contents;
+        }
 
         /// <summary>
         /// Gets the contents of the singleton token.

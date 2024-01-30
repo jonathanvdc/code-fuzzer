@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -10,9 +9,13 @@ namespace CodeFuzzer
     /// </summary>
     public class MultiLineCommentDef : ITokenDef
     {
-        public this(
-            set string Prefix, set string Suffix, set int MaxCommentLength)
-        { }
+        public MultiLineCommentDef(
+            string Prefix, string Suffix, int MaxCommentLength)
+        {
+            this.Prefix = Prefix;
+            this.Suffix = Suffix;
+            this.MaxCommentLength = MaxCommentLength;
+        }
 
         /// <summary>
         /// Gets the prefix that starts a multi-line comment.
@@ -55,7 +58,7 @@ namespace CodeFuzzer
             return i + Suffix.Length;
         }
 
-        static this()
+        static MultiLineCommentDef()
         {
             validChars = new char[0x7E - 0x20 + 4];
             validChars[0] = ' ';

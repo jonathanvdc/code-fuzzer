@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -10,7 +9,7 @@ namespace CodeFuzzer
     /// </summary>
     public abstract class SyntaxNode
     {
-        public this() { }
+        public SyntaxNode() { }
 
         /// <summary>
         /// Gets the symbol for this syntax node.
@@ -48,8 +47,10 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class TokenNode : SyntaxNode
     {
-        public this(set Token Value)
-        { }
+        public TokenNode(Token Value)
+        {
+            this.Value = Value;
+        }
 
         /// <summary>
         /// Gets this terminal node's token.
@@ -78,9 +79,12 @@ namespace CodeFuzzer
     /// </summary>
     public sealed class ProductionNode : SyntaxNode
     {
-        public this(
-            set string nonterminal, set IReadOnlyList<SyntaxNode> Children)
-        { }
+        public ProductionNode(
+            string nonterminal, IReadOnlyList<SyntaxNode> Children)
+        {
+            this.nonterminal = nonterminal;
+            this.Children = Children;
+        }
 
         private string nonterminal;
 

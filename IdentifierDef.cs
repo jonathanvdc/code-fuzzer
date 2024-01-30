@@ -1,5 +1,4 @@
 using System;
-using LeMP;
 
 namespace CodeFuzzer
 {
@@ -8,8 +7,10 @@ namespace CodeFuzzer
     /// </summary>
     public class IdentifierDef : ITokenDef
     {
-        public this(set int MaxIdentifierLength)
-        { }
+        public IdentifierDef(int MaxIdentifierLength)
+        {
+            this.MaxIdentifierLength = MaxIdentifierLength;
+        }
 
         /// <summary>
         /// Gets the maximal length of identifiers.

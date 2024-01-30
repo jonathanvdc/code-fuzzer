@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "code-fuzzer", "code-fuzzer.csproj", "{26CB84A6-8AFF-494D-B39D-1275C8EF4D5B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26CB84A6-8AFF-494D-B39D-1275C8EF4D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26CB84A6-8AFF-494D-B39D-1275C8EF4D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26CB84A6-8AFF-494D-B39D-1275C8EF4D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26CB84A6-8AFF-494D-B39D-1275C8EF4D5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DB70C629-8882-4AE9-A3D4-B5BFB0AEA0B3}
+	EndGlobalSection
+EndGlobal
